@@ -1,0 +1,13 @@
+{
+    "autoload": {
+        "classmap": [
+            "classes/"
+        ]
+    },
+    "require": {
+        "vlucas/phpdotenv": "^4.1"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^8"
+    }
+}
