@@ -16,3 +16,5 @@
 
 </head>
 <body>
+<?php
+$uri = 'http://localhost/PHPinl%C3%A4mning3/Inl-mningsuppgift3PHP';

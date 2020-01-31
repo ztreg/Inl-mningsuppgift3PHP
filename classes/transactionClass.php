@@ -51,11 +51,10 @@ class person
         return $persons;
     }
 
-    public function createTransaction($data)
+    public function makeTransaction($data)
     {
         // Setup query.
-        $sql = 'INSERT INTO Person (name, amount) ' .
-            'VALUES (:name, :amount)';
+        $sql = "UPDATE person SET moneyAmount = :amount WHERE personName = :name";
 
         // Prepare query.
         $statement = $this->db->prepare($sql);

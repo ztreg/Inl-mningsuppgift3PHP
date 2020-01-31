@@ -16,7 +16,7 @@ class Product
         $this->db = $obj->pdo;
     }
 
-    /*public function createProduct($data)
+    public function createProduct($data)
     {
         // Setup query.
         $sql = 'INSERT INTO products (productCode, productName, productLine, ' .

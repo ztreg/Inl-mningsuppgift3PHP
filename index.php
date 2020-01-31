@@ -1,5 +1,6 @@
 <?php
 include('./includes/header.php');
+
 // Person class
 include_once('./classes/transactionClass.php');
 $persons_object = new Person();
@@ -11,7 +12,6 @@ $person_id = $_GET['id'] ?? null;
 // Get persons.
 $persons = $persons_object->getPersons($person_id, $no_of_persons);
 
-
 ?>
 
 <div class="container">
@@ -19,7 +19,7 @@ $persons = $persons_object->getPersons($person_id, $no_of_persons);
         <a class="navbar-brand" href="#">Money Transactions</a>
     </nav>
     <div>
-    <form class="card-group" method="post" action="./api/post.php">
+    <form class="card-group" method="post" action="./sendrequests/sendToApi.php">
         <div class="card" style="width: 18rem;">
             <div class="card-body">
                 <h5 class="card-title">From</h5>
