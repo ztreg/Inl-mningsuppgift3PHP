@@ -1,0 +1,13 @@
+/* The animation code */
+@keyframes sent {
+    0%   {background-color:white; left:0px; top:0px;}
+    50%  {background-color:green; left:200px; top:200px;}
+    100% {background-color:white; left:0px; top:0px;}
+  }
+  
+  /* The element to apply the animation to */
+  .from, .to, .list-name, .list-amount  {
+    position: relative;
+    animation-name: sent;
+    animation-duration: 0.1s;
+  }

@@ -11,8 +11,7 @@ include_once('../classes/transactionClass.php');
 $getPeople = new person();
 
 // Get persons.
-//$getPeople->getPersons();
-//$getPeople->getTimestamps();
+
 if ($getPeople->getPersons() && $getPeople->getTimestamps()){
     $persons = $getPeople->getPersons();
     $timeStamps = $getPeople->getTimestamps();

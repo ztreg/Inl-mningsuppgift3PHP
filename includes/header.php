@@ -13,6 +13,7 @@
 
     <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
     <link rel="canonical" href="https://getbootstrap.com/docs/4.0/examples/cover/">
+    <link href="./css/maincss.css" rel="stylesheet">
 
 </head>
 <body>

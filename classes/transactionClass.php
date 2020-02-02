@@ -84,11 +84,7 @@ class person
 
         return $timeStamps;
     }
-        //$sql2 = "UPDATE person IF(
-        //    (`moneyAmount` - :moneyAmount > 0),
-        //     `moneyAmount` = `moneyAmount` - :moneyAmount,
-        //     `moneyAmount` = :moneyAmount)
-        //WHERE personName = :fromName";
+      
     public function makeTransaction($data)
     {
         // Setup query
@@ -100,17 +96,34 @@ class person
         $statement = $this->db->prepare($sql);
         $statement->bindValue('toName', filter_var($data->toName, FILTER_SANITIZE_STRING));
         $statement->bindValue('moneyAmount', filter_var($data->moneyAmount, FILTER_SANITIZE_STRING));
+        try {
+            $statement->execute();
+        }
+        catch (\PDOException $e){
+            throw new \PDOException($e->getMessage(), (int) $e->getCode());
+        }
+        
+        //$sql2 = "UPDATE person 
+        //    SET moneyAmount = moneyAmount - :moneyAmount 
+        //    WHERE personName = :fromName";
+        $test = "SELECT moneyAmount FROM person WHERE personName = :fromName";
+        $statement = $this->db->prepare($test);
+        $statement->bindValue('fromName', filter_var($data->fromName, FILTER_SANITIZE_STRING));
         $statement->execute();
-
-      
-        $sql2 = "UPDATE person 
-        SET `moneyAmount` = `moneyAmount` - :moneyAmount
-        WHERE personName = :fromName";
+        
+       $sql2 = "UPDATE Person
+       SET moneyAmount = IF($test > 0, moneyAmount - :moneyAmount, moneyAmount)
+       WHERE personName = :fromName";
 
         $statement = $this->db->prepare($sql2);
         $statement->bindValue('moneyAmount', filter_var($data->moneyAmount, FILTER_SANITIZE_STRING));  
         $statement->bindValue('fromName', filter_var($data->fromName, FILTER_SANITIZE_STRING));
-        $statement->execute();
+        try {
+            $statement->execute();
+        }
+        catch (\PDOException $e){
+            throw new \PDOException($e->getMessage(), (int) $e->getCode());
+        }
 
         $sql3 = "INSERT INTO `timestamp` (`fromPerson`,`moneyAmount`,`timeStamp`,`toPerson`, `paymentMethod`)
         VALUES(:fromName, :moneyAmount, NOW(), :toName, :paymentMethod)";
@@ -120,8 +133,13 @@ class person
         $statement->bindValue('moneyAmount', filter_var($data->moneyAmount, FILTER_SANITIZE_STRING));  
         $statement->bindValue('toName', filter_var($data->toName, FILTER_SANITIZE_STRING));
         $statement->bindValue('paymentMethod', filter_var($data->paymentMethod, FILTER_SANITIZE_STRING));
-
-        return $statement->execute();
+        try {
+            return $statement->execute();
+        }
+        catch (\PDOException $e){
+            throw new \PDOException($e->getMessage(), (int) $e->getCode());
+        }
+        
     }
 
 }
