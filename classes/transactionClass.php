@@ -74,7 +74,8 @@ class person
                 'fromPerson'        => $fromPerson,
                 'toPerson'       => $toPerson,
                 'timeStamp'        => $timeStamp,
-                'moneyAmount'       => $moneyAmount
+                'moneyAmount'       => $moneyAmount,
+                'paymentMethod'     => $paymentMethod,
             ];
     
             // Add person item to persons array.
@@ -111,16 +112,15 @@ class person
         $statement->bindValue('fromName', filter_var($data->fromName, FILTER_SANITIZE_STRING));
         $statement->execute();
 
-        $sql3 = "INSERT INTO `timestamp` (`fromPerson`,`moneyAmount`,`timeStamp`,`toPerson`)
-        VALUES(:fromName, :moneyAmount, NOW(), :toName)";
+        $sql3 = "INSERT INTO `timestamp` (`fromPerson`,`moneyAmount`,`timeStamp`,`toPerson`, `paymentMethod`)
+        VALUES(:fromName, :moneyAmount, NOW(), :toName, :paymentMethod)";
 
         $statement = $this->db->prepare($sql3);
         $statement->bindValue('fromName', filter_var($data->fromName, FILTER_SANITIZE_STRING));
         $statement->bindValue('moneyAmount', filter_var($data->moneyAmount, FILTER_SANITIZE_STRING));  
         $statement->bindValue('toName', filter_var($data->toName, FILTER_SANITIZE_STRING));
+        $statement->bindValue('paymentMethod', filter_var($data->paymentMethod, FILTER_SANITIZE_STRING));
 
-  
-        //$statement->bindValue('timeStamp', filter_var($data->time, FILTER_SANITIZE_STRING));
         return $statement->execute();
     }
 

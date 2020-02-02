@@ -9,7 +9,7 @@ include_once('./includes/header.php');
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <a class="navbar-brand" href="#">Money Transactions</a>
     </nav>
-    
+    <div class="row">
     <form id="registrationForm" class="card-group" method="post" action="?">
         <div class="card">
             <div class="card-body">
@@ -20,15 +20,22 @@ include_once('./includes/header.php');
                     <option class="card-text from" value="">Send from here</option>
 
                 </select>
-                <p> Amount</p>
-                <input type="number" name="amount" class="amount">
-                
+            
+                <p>Amount <input type="number" name="amount" class="amount"></p>
+                <p>Method <select id="method" name="paymentMethod"></p>
+    
+                    <option class="card-text method" value="Card/Visa">Card/Visa</option>
+                    <option class="card-text method" value="Swish">Swish</option>
+                    <option class="card-text method" value="Klarna">Klarna</option>
+                    <option class="card-text method" value="Cash">Cash</option>
+
+                </select>
             </div>
         </div>
         <div class="card">
             <div class="card-body">
             <h5 class="card-title">To</h5>
-                <select id="to" class="card col-sm-3" name="name">
+                <select id="to" class="card" name="name">
     
                     <option class="card-text to" value=""> To the people here</option>
 
@@ -39,6 +46,7 @@ include_once('./includes/header.php');
         </div>
 
     </form>
+    </div>
     <h5 class="text-center">Live-updates</h5>
     <div class="row">
         
@@ -63,6 +71,7 @@ include_once('./includes/header.php');
                         <th>To</th>
                         <th>Amount</th>
                         <th>Timestamp</th>
+                        <th>PaymentMethod</th>
                     </tr>
                 </table>
             </div>
