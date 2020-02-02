@@ -1,51 +1,70 @@
 <?php
-include('./includes/header.php');
 
-// Person class
-include_once('./classes/transactionClass.php');
-$persons_object = new Person();
+include_once('./includes/header.php');
 
-// Check if querystring is set to look for id or number of persons.
-$no_of_persons = $_GET['no'] ?? null;
-$person_id = $_GET['id'] ?? null;
-
-// Get persons.
-$persons = $persons_object->getPersons($person_id, $no_of_persons);
 
 ?>
 
-<div class="container">
+<div class="container-fluid">
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <a class="navbar-brand" href="#">Money Transactions</a>
     </nav>
-    <div>
-    <form class="card-group" method="post" action="./sendrequests/sendToApi.php">
-        <div class="card" style="width: 18rem;">
+    
+    <form id="registrationForm" class="card-group" method="post" action="?">
+        <div class="card">
             <div class="card-body">
                 <h5 class="card-title">From</h5>
-                <select class="card sm-2" name="name">
-            <?php foreach ($persons as $person) : ?>
-                <option class=" card-text" value=" <?php echo $person['personName']; ?>"> <?php echo $person['personName']; ?> has currently <?php echo $person['moneyAmount']; ?></option>
-                <?php endforeach; ?>
+
+                <select id="from" class="card" name="name">
+    
+                    <option class="card-text from" value="">Send from here</option>
+
                 </select>
-                <input type="number" name="amount">
+                <p> Amount</p>
+                <input type="number" name="amount" class="amount">
             </div>
         </div>
-        <div class="card" style="width: 18rem;">
+        <div class="card">
             <div class="card-body">
                 <h5 class="card-title">To</h5>
-                <select class="card sm-2"">
-                <?php foreach ($persons as $person) : ?>
-                    <option class=" card-text" value=" <?php echo $person['personName']; ?>"> <?php echo $person['personName']; ?> has <?php echo $person['moneyAmount']; ?></option>
-                <?php endforeach; ?>
+                <select id="to" class="card" name="name">
+    
+                    <option class="card-text to" value=""> To the people here</option>
+
                 </select>
             </div>
         </div>
 
        <input type="submit" class="btn-btn primary">
     </form>
-</div>
-
+    
+    <div class="row">
+    <div class="card col-sm-4" >
+            <div class="card-body">
+                <h5 class="card-title">Live-list</h5>
+                <table id="list" class="table">
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Amount</th>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div class="card col-sm-4">
+            <div class="card-body">
+                <h5 class="card-title">Latest 10 transactions</h5>
+                <table id="time" class="table">
+                    <tr>
+                        <th>From</th>
+                        <th>To</th>
+                        <th>Amount</th>
+                        <th>Timestamp</th>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
 </div>
 
 <?php

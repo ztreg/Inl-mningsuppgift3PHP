@@ -1,8 +1,9 @@
 <?php
-include("../includes/header.php");
-include('../includes/footer.php');
+include_once("./includes/header.php");
 if(isset($_POST['name']) && isset($_POST['amount']))
 {
+  
+  include('./includes/footer.php');
     $name = filter_input(INPUT_POST, 'name', FILTER_SANITIZE_STRING);
     $amount = filter_input(INPUT_POST, 'amount', FILTER_SANITIZE_STRING);
 ?>
@@ -19,20 +20,17 @@ if(isset($_POST['name']) && isset($_POST['amount']))
     //console.log(dataToSend);
 
     $.ajax({
-    type: "POST",
-    url: "http://localhost/PHPinl%C3%A4mning3/Inl-mningsuppgift3PHP/api/post.php",
+    type: "PUT",
+    url: "http://localhost/PHPinl%C3%A4mning3/Inl-mningsuppgift3PHP/api/update.php",
     data: dataToSend,
     cache: false,
     success: function(){
       //check if what response is
-
+     
       
     } 
   });
 
 </script>
 <?php
-} else {
-  echo "error";
-}
-
+} 

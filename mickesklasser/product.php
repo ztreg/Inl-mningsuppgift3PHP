@@ -61,7 +61,7 @@ class Product
         // Execute query and return result.
         return $statement->execute();
     }
-    */
+    
     public function getProducts($id = null, $limit = null)
     {
         // Setup query.
