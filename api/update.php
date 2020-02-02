@@ -19,9 +19,9 @@ include_once('../classes/transactionClass.php');
 //$time = $d1->date;
 
 $object = new stdClass();
-$object->fromName = $_POST['fromName'];
-$object->toName = $_POST['toName'];
-$object->moneyAmount = $_POST['amount'];
+$object->fromName = filter_input(INPUT_POST, 'fromName', FILTER_SANITIZE_STRING);
+$object->toName = filter_input(INPUT_POST, 'toName', FILTER_SANITIZE_STRING);
+$object->moneyAmount = filter_input(INPUT_POST, 'amount', FILTER_SANITIZE_STRING);
 //$object->timeStamp = $time;
 
 $newTransaction = new person();

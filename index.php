@@ -22,36 +22,39 @@ include_once('./includes/header.php');
                 </select>
                 <p> Amount</p>
                 <input type="number" name="amount" class="amount">
+                
             </div>
         </div>
         <div class="card">
             <div class="card-body">
-                <h5 class="card-title">To</h5>
-                <select id="to" class="card" name="name">
+            <h5 class="card-title">To</h5>
+                <select id="to" class="card col-sm-3" name="name">
     
                     <option class="card-text to" value=""> To the people here</option>
 
                 </select>
+                <input type="submit" class="btn-btn primary" value="Send money">
             </div>
+
         </div>
 
-       <input type="submit" class="btn-btn primary">
     </form>
-    
+    <h5 class="text-center">Live-updates</h5>
     <div class="row">
+        
     <div class="card col-sm-4" >
             <div class="card-body">
-                <h5 class="card-title">Live-list</h5>
+                <h5 class="card-title">All people</h5>
                 <table id="list" class="table">
                     <tr>
                         <th>ID</th>
                         <th>Name</th>
-                        <th>Amount</th>
+                        <th>BankAmount</th>
                     </tr>
                 </table>
             </div>
         </div>
-        <div class="card col-sm-4">
+        <div class="card col-sm-6">
             <div class="card-body">
                 <h5 class="card-title">Latest 10 transactions</h5>
                 <table id="time" class="table">
