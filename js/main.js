@@ -2,7 +2,7 @@ $(document).ready(function () {
     //Make a get request as soon as the page loads
     //Add lists with values
     $.ajax({
-        url: 'http://localhost/PHPinl%C3%A4mning3/Inl-mningsuppgift3PHP/api/get.php',
+        url: '/Inl-mningsuppgift3PHP/api/get.php',
         type: 'GET',
         dataType: 'json',
         cache: false,
@@ -15,8 +15,8 @@ $(document).ready(function () {
                 let id = data.result[i].id;
                
                //console.log(data.result);
-                $("#from").append(`<option class="card-text from" value="${name}">${name} has ${amount}`);
-                $("#to").append(`<option class="card-text to" value="${name}">${name} has ${amount}`);
+                $("#from").append(`<option class="card-text from" value="${name}">${name} has <p class="fromAm">${amount}</p>`);
+                $("#to").append(`<option class="card-text to" value="${name}">${name} has <p class="toAm">${amount}</p>`);
                 $("#list").append(`<tr><td class="ID">${id}</td><td class="list-name">${name}</td><td class="list-amount">${amount} kr</td></tr>`);
                 $("#from").val(data.result[0].personName); 
                 $("#to").val(data.result[1].personName);
@@ -51,16 +51,24 @@ $(document).ready(function () {
         let toName = $("#to").val();
         let amount = $(".amount").val();
         let paymentMethod = $('#method').val();
+        let fromAm = $('.fromAm').text();
 
         let dataToSend = {
             fromName: fromName,
             toName: toName,
             amount: amount,
-            paymentMethod, paymentMethod
+            paymentMethod, paymentMethod,
+            fromAm : fromAm
+        }
+
+        if(amount > fromAm)
+        {
+            console.log("inte tillräckligt med cash på kontot");
         }
         $.ajax({
             type: "POST",
-            url: "http://localhost/PHPinl%C3%A4mning3/Inl-mningsuppgift3PHP/api/update.php",
+            async: true,
+            url: "/Inl-mningsuppgift3PHP/api/update.php",
             data: dataToSend,
             cache: false,
             success: function (result) {
@@ -74,14 +82,16 @@ $(document).ready(function () {
         });
         
         // make a get request after the post to get the latest values
-
+        // Update all values to the newest values
         $.ajax({
-            url: 'http://localhost/PHPinl%C3%A4mning3/Inl-mningsuppgift3PHP/api/get.php',
+            url: '/Inl-mningsuppgift3PHP/api/get.php',
+            async: true,
             type: 'GET',
             dataType: 'json',
             cache: false,
             success: function (data) 
             {
+                console.log(data);
                 for(let i = 0; i < data.result.length; i++) 
                 {  
                     let name = data.result[i].personName;
@@ -92,12 +102,14 @@ $(document).ready(function () {
                     document.getElementsByClassName("list-amount")[i].innerHTML = amount + " kr";
                 }
                 for(let i = 0; i < data.result2.length; i++) {
+                    
                     let from = data.result2[i].fromPerson;
+                    console.log(from);
                     let to = data.result2[i].toPerson;
                     let time = data.result2[i].timeStamp;
                     let amount = data.result2[i].moneyAmount;
                     let paymentMethod = data.result2[i].paymentMethod;
-                    document.getElementsByClassName("fromT")[i].innerHTML = from ;
+                    document.getElementsByClassName("fromT")[i].innerHTML = from;
                     document.getElementsByClassName("toT")[i].innerHTML = to;
                     document.getElementsByClassName("amountT")[i].innerHTML = amount + " kr";
                     document.getElementsByClassName("timeT")[i].innerHTML = time;

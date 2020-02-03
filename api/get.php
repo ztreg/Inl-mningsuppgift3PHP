@@ -12,9 +12,9 @@ $getPeople = new person();
 
 // Get persons.
 
-if ($getPeople->getPersons() && $getPeople->getTimestamps()){
+if ($getPeople->getPersons() && $getPeople->getTimestamps(10)){
     $persons = $getPeople->getPersons();
-    $timeStamps = $getPeople->getTimestamps();
+    $timeStamps = $getPeople->getTimestamps(10);
     $response = [
         'info' => [
             'posts' => count($persons),
@@ -34,5 +34,6 @@ if ($getPeople->getPersons() && $getPeople->getTimestamps()){
 echo json_encode($response);
 
 
+//Try catch i php, inte sql
 
 

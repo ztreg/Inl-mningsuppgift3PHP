@@ -14,10 +14,6 @@ include_once('../classes/transactionClass.php');
 
 //$persons = $persons_object->getPersons($person_id, $no_of_persons);
 
-//$body_data = json_encode(file_get_contents('php://input'));
-//$d1 = new Datetime();
-//$time = $d1->date;
-
 $object = new stdClass();
 $object->fromName = filter_input(INPUT_POST, 'fromName', FILTER_SANITIZE_STRING);
 $object->toName = filter_input(INPUT_POST, 'toName', FILTER_SANITIZE_STRING);
@@ -29,33 +25,18 @@ $newTransaction = new person();
 $response = [
     'results' => null
 ];
-if ($newTransaction->makeTransaction($object)) 
-{
-   
-    // Set a suitable response code.
+if ($newTransaction->makeTransaction($object)) {
     http_response_code(201);
     $_SESSION['info'] = "Transaction sucess!";
-    // Set a readable message.
     $response['info']['message'] = "Transaction sucess!";
-
-    // Add the newly created product to results.
     $response['results'] = $object;
 } else {
-    // Set a suitable response code.
     http_response_code(500);
     $_SESSION['info'] = "Transaction failed!";
-    // Set a readable message.
     $response['info']['message'] = "Couldn't make transaction!";
 }
+
 
 // Format response.
 // Same as last one.
 echo json_encode($response);
-
-?>
-
-
-
-
-
-
