@@ -7,7 +7,7 @@ include_once('./includes/header.php');
 
 <div class="container-fluid">
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="#">Money Transactions</a>
+        <a class="navbar-brand" href="#">Money Transactions du är inloggad som "admin"</a>
     </nav>
     <div class="row">
         <form id="registrationForm" class="card-group" method="post" action="?">
@@ -16,8 +16,6 @@ include_once('./includes/header.php');
                     <h5 class="card-title">From</h5>
 
                     <select id="from" class="card" name="name">
-
-                        <option class="card-text from" value="" onchange="myFunction()">Send from here</option>
 
                     </select>
 
@@ -37,24 +35,25 @@ include_once('./includes/header.php');
                     <h5 class="card-title">To</h5>
                     <select id="to" class="card" name="name">
 
-                        <option class="card-text to" value=""> To the people here</option>
-
                     </select>
-                    <input type="submit" class="btn-btn primary" value="Send money">
+                    <input type="submit" class="btn primary" value="Send money">
+                    <p id="info">test</p>
                 </div>
             </div>
         </form>
     </div>
     <h5 class="text-center">Live-updates</h5>
     <div class="row">
-        <div class="card col-sm-4">
+        <div class="card ">
             <div class="card-body">
                 <h5 class="card-title">All people</h5>
                 <table id="list" class="table">
                     <tr>
                         <th>ID</th>
                         <th>Name</th>
+                        <th>Accountnumber</th>
                         <th>BankAmount</th>
+                        <th>Currency</th>
                     </tr>
                 </table>
             </div>
