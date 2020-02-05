@@ -1,18 +1,19 @@
 <?php
-include_once 'db.php';
+
+include_once 'MySQLDB.php';
 
 class transactionClass
 {
     private $db;
 
-    public function __construct(DB $db)
+    public function __construct(MySQLDB $db)
     {
-        $this->db = $db->getDB();
+        $this->db = $db->getConnection();
     }
     public function getTimestamps($limit)
     {
         // Setup query.
-        $sql = 'SELECT * FROM timestamp ORDER BY timeStamp DESC';
+        $sql = 'SELECT * FROM transactions ORDER BY timeStamp DESC';
         $parameters = null;
 
         $sql .= ' LIMIT ' . $limit;
@@ -48,15 +49,15 @@ class transactionClass
         try {
             //Checks if the users that the transaction will do exists in the db.
             //If yes, throw an exception
-            if(!$this->checkIfExists($data)){
+            if (!$this->checkIfExistsAndHasMoney($data)) {
                 throw new Exception();
-            }
-            else {
+            } else {
                 try {
-                
+
                     // Setup query
                     $sql = "UPDATE account as a
-                    INNER JOIN person as p ON a.person_ID = p.person_ID
+                    INNER JOIN person as p 
+                    ON a.accountNumber = p.accountNumber
                     SET `moneyAmount` = `moneyAmount` + :moneyAmount
                     WHERE p.personName = :toName";
 
@@ -67,16 +68,17 @@ class transactionClass
                     $statement->execute();
 
                     $sql2 = "UPDATE account as a
-                    INNER JOIN person as p ON a.person_ID = p.person_ID
+                    INNER JOIN person as p 
+                    ON a.accountNumber = p.accountNumber
                     SET `moneyAmount` = `moneyAmount` - :moneyAmount
                     WHERE p.personName = :fromName";
 
                     $statement = $this->db->prepare($sql2);
                     $statement->bindValue('moneyAmount', filter_var($data->moneyAmount, FILTER_SANITIZE_STRING));
                     $statement->bindValue('fromName', filter_var($data->fromName, FILTER_SANITIZE_STRING));
-                    $statement->execute();  
+                    $statement->execute();
 
-                    $sql3 = "INSERT INTO `timestamp`(`fromPerson`,`moneyAmount`,`timeStamp`,`toPerson`, `paymentMethod`)
+                    $sql3 = "INSERT INTO `transactions`(`fromPerson`,`moneyAmount`,`timeStamp`,`toPerson`, `paymentMethod`)
                     VALUES(:fromName, :moneyAmount, NOW(), :toName, :paymentMethod)";
 
                     $statement = $this->db->prepare($sql3);
@@ -85,27 +87,52 @@ class transactionClass
                     $statement->bindValue('toName', filter_var($data->toName, FILTER_SANITIZE_STRING));
                     $statement->bindValue('paymentMethod', filter_var($data->paymentMethod, FILTER_SANITIZE_STRING));
                     return $statement->execute();
-                
                 } catch (Exception $e) {
-                    echo 'Caught exception: the transfer failed ',  $e->getMessage(), "\n";
+                    echo 'Caught exception: Something in the transfer failed ',  $e->getMessage(), "\n";
                 }
             }
-            
         } catch (Exception $e) {
-            echo 'Caught exception: The users doesnt exist ',  $e->getMessage(), "\n";
+            echo 'Caught exception: One of the users doesnt exist OR the user didnt have enough money',  $e->getMessage(), "\n";
         }
     }
 
-    public function checkIfExists($data)
+    public function checkIfExistsAndHasMoney($data)
     {
-        //Will return false if the users doesnt match.
-        $sql = "SELECT * FROM person
-        WHERE personName = :fromName AND personName = :toName";
+        //Will return false if the users doesnt match or if the person has a too little money.
 
-        $statement = $this->db->prepare($sql);
-        $statement->bindValue('fromName', filter_var($data->fromName, FILTER_SANITIZE_STRING));
-        $statement->bindValue('toName', filter_var($data->toName, FILTER_SANITIZE_STRING));
-        return $statement->execute();
+        try {
+            $sql = "SELECT * FROM person
+            WHERE personName = :fromName AND personName = :toName";
+
+            $statement = $this->db->prepare($sql);
+            $statement->bindValue('fromName', filter_var($data->fromName, FILTER_SANITIZE_STRING));
+            $statement->bindValue('toName', filter_var($data->toName, FILTER_SANITIZE_STRING));
+
+            $statement->execute();
+
+            $sqlSender = "SELECT moneyAmount 
+            FROM account as a
+            INNER JOIN person as p ON a.accountNumber = p.accountNumber
+            WHERE :fromName = personName";
+
+            $statement = $this->db->prepare($sqlSender);
+            $statement->bindParam(':fromName', $data->fromName, FILTER_SANITIZE_STRING);
+
+            if (!($statement->execute())) {
+                throw new \Exception("Sender doesn't have an account.");
+            } elseif ($statement->execute()) {
+                $sender = $statement->fetch();
+            }
+            $val = floatval($data->moneyAmount);
+            $val2 = floatval($sender['moneyAmount']);
+
+            if ($val > $val2) {
+                throw new \Exception($val2);
+            } else {
+                return $statement->execute();
+            }
+        } catch (Exception $e) {
+            echo  $e->getMessage(), "\n";
+        }
     }
-
 }

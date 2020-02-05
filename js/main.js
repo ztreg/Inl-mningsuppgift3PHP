@@ -7,9 +7,9 @@ $(document).ready(function () {
         url: '/PHPinlämning3/Inl-mningsuppgift3PHP/api/generelizedApi.php',
         type: 'GET',
         dataType: 'json',
-        cache: false,
         success: function (data) {
 
+            //Fill the dropdowns + the people list
             for (let i = 0; i < data.result.length; i++) {
                 let name = data.result[i].personName;
                 let amount = data.result[i].moneyAmount;
@@ -23,16 +23,15 @@ $(document).ready(function () {
 
             }
 
+            //Fill the timestamp table with the updated values
             for (let i = 0; i < data.result2.length; i++) {
                 let from = data.result2[i].fromPerson;
                 let to = data.result2[i].toPerson;
-                let time = data.result2[i].timeStamp;
-                let currency = data.result[i].currency;
+                let time = data.result2[i].timeStamp; 
                 let cuttedTime = time.slice(0, 16)
                 let amount = data.result2[i].moneyAmount;
                 let method = data.result2[i].paymentMethod;
-                //console.log(from + " " + to);
-
+             
                 $("#time").append(`<tr><td class='fromT'>${from}</td><td class='toT'>${to}</td><td class='amountT'>${amount}</td><td class='timeT'>${cuttedTime}</td><td class='methodT'>${method}</td></tr>`);
             }
         },
@@ -68,7 +67,6 @@ $(document).ready(function () {
             url: `https://api.exchangeratesapi.io/latest?base=${fromCurrency}`,
             type: 'GET',
             dataType: 'json',
-            cache: false,
             success: function (translate) {
                 switch (toCurrency) {
                     case "EUR":
@@ -82,13 +80,15 @@ $(document).ready(function () {
                         break;
 
                 }
-                console.log(amountToSend);
+                 
+                //Fill the object with the new rated amount.
                 dataToSend = {
                     fromName: fromName,
                     toName: toName,
                     amount: amountToSend,
                     paymentMethod: paymentMethod
                 }
+                //Start the post request with the new values.
                 post(dataToSend);
 
             },
@@ -105,14 +105,13 @@ $(document).ready(function () {
             let amountToSendAsInt = parseInt(amountToSend);
             console.log(fromAmountAsInt + " ska skicka " + amountToSendAsInt);
             try {
-                if (amountToSendAsInt > fromAmountAsInt) {
+                if (0 > 1) {
                     throw "The customer does not have enough money";
                 } else {
                     $.ajax({
                         type: "POST",
                         url: "/PHPinlämning3/Inl-mningsuppgift3PHP/api/generelizedApi.php",
                         data: dataToSend,
-                        cache: false,
                         success: function (result) {
 
                             //once the post is sucessfull, make a GET request for the latest info in the database
@@ -122,7 +121,6 @@ $(document).ready(function () {
                                 url: '/PHPinlämning3/Inl-mningsuppgift3PHP/api/generelizedApi.php',
                                 type: 'GET',
                                 dataType: 'json',
-                                cache: false,
                                 success: function (data) {
                                     //console.log(data);
                                     for (let i = 0; i < data.result.length; i++) {
@@ -150,25 +148,26 @@ $(document).ready(function () {
                                         document.getElementsByClassName("timeT")[i].innerHTML = cuttedTime;
                                         document.getElementsByClassName("methodT")[i].innerHTML = paymentMethod;
                                     }
-                                },
+                                }, //End sucess GET
                                 error: function (request, status) {
                                     console.log(request);
                                     console.log(status);
                                 }
                             });
-                        },
+                        }, // End sucess POST
                         error: function (request, status) {
                             console.log(request);
                             console.log(status);
                         }
                     });
-                }
-            } catch (err) {
+                } //End IF 
+            } //End TRY
+             catch (err) {
                 console.error(err);
-            }
-        }
+            } //End Catch
+         } //End function POST
 
-    });
+    }); //End on submit
 
 
-});
+}); // End on dom loaded.

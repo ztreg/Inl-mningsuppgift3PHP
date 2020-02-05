@@ -4,16 +4,16 @@ class personClass
 {
     private $db;
 
-    public function __construct(DB $db)
+    public function __construct(MySQLDB $db)
     {
-        $this->db = $db->getDB();
+        $this->db = $db->getConnection();
     }
 
     public function getPersons()
     {
         try {
             $sql = 'SELECT * FROM person as p
-            INNER JOIN account as a ON p.person_ID = a.person_ID';
+            INNER JOIN account as a ON p.accountNumber = a.accountNumber';
             $parameters = null;
 
             $statement = $this->db->prepare($sql);
@@ -22,7 +22,7 @@ class personClass
             $persons = [];
 
             while ($row = $statement->fetch()) {
-            
+
                 extract($row);
 
                 $person_item = [
@@ -38,12 +38,9 @@ class personClass
             }
 
             return $persons;
-    }
-    catch (\Exception $e) {
-        throw new \PDOException($e->getMessage(), (int) $e->getCode());
-        echo "Failed to get all persons: " . $e->getMessage();
-        
-    }
-
+        } catch (\Exception $e) {
+            throw new \PDOException($e->getMessage(), (int) $e->getCode());
+            echo "Failed to get all persons: " . $e->getMessage();
+        }
     }
 }

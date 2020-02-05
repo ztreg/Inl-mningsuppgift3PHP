@@ -1,6 +1,6 @@
 <?php
 
-class DB
+class MySQLDB
 {
     private $host;
     private $port;
@@ -25,7 +25,7 @@ class DB
         $this->charset = 'utf8mb4';
         }
 
-        public function getDB()
+        public function getConnection()
         {
             $this->options = [
                 PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
