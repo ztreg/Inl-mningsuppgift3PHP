@@ -15,6 +15,7 @@ $response = [
 
 try {
     if (empty('fromName') && empty('toName') && empty('amount') && empty('paymentMethod')) {
+        throw new \Exception;
         http_response_code(400);
     } else {
         try {
@@ -28,7 +29,8 @@ try {
                     $object->fromName = filter_input(INPUT_POST, 'fromName', FILTER_SANITIZE_STRING);
                     $object->toName = filter_input(INPUT_POST, 'toName', FILTER_SANITIZE_STRING);
                     $object->moneyAmount = filter_input(INPUT_POST, 'amount', FILTER_SANITIZE_STRING);
-                    if ($object->moneyAmount <= 0) {      
+                    $object->oldAmount = filter_input(INPUT_POST, 'oldAmount', FILTER_SANITIZE_STRING);
+                    if ($object->moneyAmount <= 0) {
                         throw new \Exception("You cant send 0 or less");
                     }
                     $object->paymentMethod = filter_input(INPUT_POST, 'paymentMethod', FILTER_SANITIZE_STRING);
@@ -51,9 +53,9 @@ try {
                     $getPeople = new personClass(new MySQLDB());
                     $getTransactionInfo = new transactionClass(new MySQLDB());
 
-                    if ($getPeople->getPersons() && $getTransactionInfo->getTimestamps(10)) {
+                    if ($getPeople->getPersons() && $getTransactionInfo->getTransactions(10)) {
                         $persons = $getPeople->getPersons();
-                        $timeStamps = $getTransactionInfo->getTimestamps(10);
+                        $timeStamps = $getTransactionInfo->getTransactions(10);
                         $response = [
                             'info' => [
                                 'posts' => count($persons),
@@ -73,6 +75,6 @@ try {
         }
     }
 } catch (Exception $e) {
-    echo 'Your post request was invalid, try posting with the required names & values. ',  $e->getMessage(), "\n";
+    $response['info']['message'] = 'Your request was invalid, it was the coders fault dont worry';
 }
 echo json_encode($response);

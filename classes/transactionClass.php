@@ -10,15 +10,14 @@ class transactionClass
     {
         $this->db = $db->getConnection();
     }
-    public function getTimestamps($limit)
+    public function getTransactions($limit)
     {
         // Setup query.
         $sql = 'SELECT * FROM transactions ORDER BY timeStamp DESC';
-        $parameters = null;
 
         $sql .= ' LIMIT ' . $limit;
         $statement = $this->db->prepare($sql);
-        $statement->execute($parameters);
+        $statement->execute();
 
         // Setup array to contain persons.
         $timeStamps = [];
@@ -50,10 +49,9 @@ class transactionClass
             //Checks if the users that the transaction will do exists in the db.
             //If yes, throw an exception
             if (!$this->checkIfExistsAndHasMoney($data)) {
-                throw new Exception();
+                throw new \Exception("Nothing worked");
             } else {
                 try {
-
                     // Setup query
                     $sql = "UPDATE account as a
                     INNER JOIN person as p 
@@ -78,7 +76,8 @@ class transactionClass
                     $statement->bindValue('fromName', filter_var($data->fromName, FILTER_SANITIZE_STRING));
                     $statement->execute();
 
-                    $sql3 = "INSERT INTO `transactions`(`fromPerson`,`moneyAmount`,`timeStamp`,`toPerson`, `paymentMethod`)
+                    $sql3 = "INSERT INTO `transactions`
+                    (`fromPerson`,`moneyAmount`,`timeStamp`,`toPerson`, `paymentMethod`)
                     VALUES(:fromName, :moneyAmount, NOW(), :toName, :paymentMethod)";
 
                     $statement = $this->db->prepare($sql3);
@@ -88,11 +87,11 @@ class transactionClass
                     $statement->bindValue('paymentMethod', filter_var($data->paymentMethod, FILTER_SANITIZE_STRING));
                     return $statement->execute();
                 } catch (Exception $e) {
-                    echo 'Caught exception: Something in the transfer failed ',  $e->getMessage(), "\n";
+                    echo 'Catched!: Something in the transfer failed.. hmm ',  $e->getMessage(), "\n";
                 }
             }
         } catch (Exception $e) {
-            echo 'Caught exception: One of the users doesnt exist OR the user didnt have enough money',  $e->getMessage(), "\n";
+            echo 'Catched:',  $e->getMessage(), "\n";
         }
     }
 
@@ -108,28 +107,30 @@ class transactionClass
             $statement->bindValue('fromName', filter_var($data->fromName, FILTER_SANITIZE_STRING));
             $statement->bindValue('toName', filter_var($data->toName, FILTER_SANITIZE_STRING));
 
-            $statement->execute();
+            if ($statement->execute() == true) {
+                $sqlSender = "SELECT moneyAmount 
+                FROM account as a
+                INNER JOIN person as p ON a.accountNumber = p.accountNumber
+                WHERE :fromName = personName";
 
-            $sqlSender = "SELECT moneyAmount 
-            FROM account as a
-            INNER JOIN person as p ON a.accountNumber = p.accountNumber
-            WHERE :fromName = personName";
+                $statement = $this->db->prepare($sqlSender);
+                $statement->bindParam(':fromName', $data->fromName, FILTER_SANITIZE_STRING);
 
-            $statement = $this->db->prepare($sqlSender);
-            $statement->bindParam(':fromName', $data->fromName, FILTER_SANITIZE_STRING);
+                if (!($statement->execute())) {
+                    throw new \Exception("Sender didnt have any money.");
+                } elseif ($statement->execute()) {
+                    $sender = $statement->fetch();
+                }
+                $val = floatval($data->oldAmount);
+                $val2 = floatval($sender['moneyAmount']);
 
-            if (!($statement->execute())) {
-                throw new \Exception("Sender doesn't have an account.");
-            } elseif ($statement->execute()) {
-                $sender = $statement->fetch();
-            }
-            $val = floatval($data->moneyAmount);
-            $val2 = floatval($sender['moneyAmount']);
-
-            if ($val > $val2) {
-                throw new \Exception($val2);
+                if ($val > $val2) {
+                    throw new \Exception("The user has too little money");
+                } else {
+                    return $statement->execute();
+                }
             } else {
-                return $statement->execute();
+                throw new \Exception("The users does not exist");
             }
         } catch (Exception $e) {
             echo  $e->getMessage(), "\n";
