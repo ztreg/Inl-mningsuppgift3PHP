@@ -58,7 +58,6 @@ $(document).ready(function () {
         //Get all the values from the "values dropdown" in the select and split the array.
         let fromArray = [$("#from").val().split(" ")];
         let fromName = fromArray[0][0];
-        let fromAmount = fromArray[0][1];
         let fromCurrency = fromArray[0][2];
 
         let toArray = [$("#to").val().split(" ")];
