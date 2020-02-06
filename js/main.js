@@ -1,7 +1,7 @@
 $(document).ready(function () {
     //Make a get request as soon as the page loads
     //Add lists with values
-
+    // link från laptop http://localhost/Inl-mningsuppgift3PHP/api/generelizedApi.php
     $.ajax({
         url: "http://localhost/Inl-mningsuppgift3PHP/api/generelizedApi.php",
         type: "GET",
@@ -69,7 +69,7 @@ $(document).ready(function () {
         let toCurrency = toArray[0][1];
         var amountToSend = $(".amount").val();
         let paymentMethod = $("#method").val();
-
+        let oldAmount = amountToSend;
         //prepare object to send
         let dataToSend = {};
 
@@ -80,7 +80,7 @@ $(document).ready(function () {
             type: "GET",
             dataType: "json",
             success: function (translate) {
-                let oldAmount = amountToSend;
+                
                 if (fromCurrency !== toCurrency) {
                     switch (toCurrency) {
                         case "EUR":
@@ -119,7 +119,7 @@ $(document).ready(function () {
             //Parse the amounts to INTS before doing the check
             let fromAmountAsInt = parseInt(fromAmount);
             let amountToSendAsInt = parseInt(amountToSend);
-            console.log(fromCurrency + " : " + fromAmountAsInt + " ska skicka " + amountToSendAsInt + " : " + toCurrency);
+            console.log(fromCurrency + " : " + fromAmountAsInt + " ska transformed " + amountToSendAsInt + " : " + toCurrency + "inte transformed" + oldAmount);
             $.ajax({
                 type: "POST",
                 url: "http://localhost/Inl-mningsuppgift3PHP/api/generelizedApi.php",

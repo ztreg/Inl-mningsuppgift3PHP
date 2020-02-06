@@ -1,5 +1,5 @@
 <?php
-include_once 'MySQLDB.php';
+
 class personClass
 {
     private $db;

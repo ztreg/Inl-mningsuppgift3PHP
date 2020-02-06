@@ -72,7 +72,7 @@ class transactionClass
                     WHERE p.personName = :fromName";
 
                     $statement = $this->db->prepare($sql2);
-                    $statement->bindValue('moneyAmount', filter_var($data->moneyAmount, FILTER_SANITIZE_STRING));
+                    $statement->bindValue('moneyAmount', filter_var($data->oldAmount, FILTER_SANITIZE_STRING));
                     $statement->bindValue('fromName', filter_var($data->fromName, FILTER_SANITIZE_STRING));
                     $statement->execute();
 
@@ -98,9 +98,9 @@ class transactionClass
     public function checkIfExistsAndHasMoney($data)
     {
         //Will return false if the users doesnt match or if the person has a too little money.
-
+        
         try {
-            $sql = "SELECT * FROM person
+            $sql = "SELECT personName FROM person
             WHERE personName = :fromName AND personName = :toName";
 
             $statement = $this->db->prepare($sql);
@@ -108,23 +108,23 @@ class transactionClass
             $statement->bindValue('toName', filter_var($data->toName, FILTER_SANITIZE_STRING));
 
             if ($statement->execute() == true) {
-                $sqlSender = "SELECT moneyAmount 
+                $bankBalance = "SELECT moneyAmount 
                 FROM account as a
                 INNER JOIN person as p ON a.accountNumber = p.accountNumber
                 WHERE :fromName = personName";
 
-                $statement = $this->db->prepare($sqlSender);
+                $statement = $this->db->prepare($bankBalance);
                 $statement->bindParam(':fromName', $data->fromName, FILTER_SANITIZE_STRING);
 
                 if (!($statement->execute())) {
                     throw new \Exception("Sender didnt have any money.");
                 } elseif ($statement->execute()) {
-                    $sender = $statement->fetch();
+                    $senderBalance = $statement->fetch();
                 }
                 $val = floatval($data->oldAmount);
-                $val2 = floatval($sender['moneyAmount']);
+                $val2 = floatval($senderBalance['moneyAmount']);
 
-                if ($val > $val2) {
+                if ($val >= $val2) {
                     throw new \Exception("The user has too little money");
                 } else {
                     return $statement->execute();

@@ -28,6 +28,7 @@ try {
                     $object = new stdClass();
                     $object->fromName = filter_input(INPUT_POST, 'fromName', FILTER_SANITIZE_STRING);
                     $object->toName = filter_input(INPUT_POST, 'toName', FILTER_SANITIZE_STRING);
+                    //Sätta rätt datatyp
                     $object->moneyAmount = filter_input(INPUT_POST, 'amount', FILTER_SANITIZE_STRING);
                     $object->oldAmount = filter_input(INPUT_POST, 'oldAmount', FILTER_SANITIZE_STRING);
                     if ($object->moneyAmount <= 0) {
