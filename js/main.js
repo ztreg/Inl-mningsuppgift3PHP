@@ -1,9 +1,10 @@
 $(document).ready(function () {
     //Make a get request as soon as the page loads
     //Add lists with values
-    // link från laptop http://localhost/Inl-mningsuppgift3PHP/api/generelizedApi.php
+    // link från för mig själv laptop http://localhost/Inl-mningsuppgift3PHP/api/generelizedApi.php
+    // link från pc för mig själv http://localhost/Grupp-B_slack/PHPinl%C3%A4mning3/Inl-mningsuppgift3PHP/api/generelizedApi.php
     $.ajax({
-        url: "http://localhost/Inl-mningsuppgift3PHP/api/generelizedApi.php",
+        url: "http://localhost/Grupp-B_slack/PHPinl%C3%A4mning3/Inl-mningsuppgift3PHP/api/generelizedApi.php",
         type: "GET",
         dataType: "json",
         success: function (data) {
@@ -20,7 +21,7 @@ $(document).ready(function () {
                     `<option class="card-text from" value="${name} ${amount} ${currency}">${name} has ${amount} ${currency}`
                 );
                 $("#to").append(
-                    `<option class="card-text to" value="${name} ${currency}">${name} has ${amount}`
+                    `<option class="card-text to" value="${name} ${currency}">${name} has ${amount} ${currency}`
                 );
                 $("#list").append(
                     `<tr><td class="ID">${id}</td><td class="list-name">${name}</td><td>${accountNumber}</td><td class="list-amount">${amount}</td><td>${currency}</td</tr>`
@@ -54,25 +55,21 @@ $(document).ready(function () {
         // Prevent form submission by the browser
         e.preventDefault();
 
-        //Get all the values from the "values" in the select
+        //Get all the values from the "values dropdown" in the select and split the array.
         let fromArray = [$("#from").val().split(" ")];
         let fromName = fromArray[0][0];
         let fromAmount = fromArray[0][1];
         let fromCurrency = fromArray[0][2];
 
-        let toArray = [
-            $("#to")
-            .val()
-            .split(" ")
-        ];
+        let toArray = [$("#to").val().split(" ")];
         let toName = toArray[0][0];
         let toCurrency = toArray[0][1];
         var amountToSend = $(".amount").val();
         let paymentMethod = $("#method").val();
         let oldAmount = amountToSend;
+        
         //prepare object to send
         let dataToSend = {};
-
 
         //Get the right currency depenings on what the user sends
         $.ajax({
@@ -96,15 +93,19 @@ $(document).ready(function () {
                 } else {
                     oldAmount = oldAmount;
                 }
-                //Fill the object with the new rated amount.
+
+                //Fill the object with the new rates and amounts.
                 dataToSend = {
                     fromName: fromName,
                     toName: toName,
                     oldAmount: oldAmount,
                     amount: amountToSend,
-                    paymentMethod: paymentMethod
+                    paymentMethod: paymentMethod,
+                    fromCurrency : fromCurrency,
+                    toCurrency : toCurrency
                 };
-                //Start the post request with the new values.
+
+                //Start the post request function with the new values.
                 post(dataToSend);
             },
             error: function (request, status) {
@@ -116,45 +117,32 @@ $(document).ready(function () {
 
 
         function post(dataToSend) {
-            //Parse the amounts to INTS before doing the check
-            let fromAmountAsInt = parseInt(fromAmount);
-            let amountToSendAsInt = parseInt(amountToSend);
-            console.log(fromCurrency + " : " + fromAmountAsInt + " ska transformed " + amountToSendAsInt + " : " + toCurrency + "inte transformed" + oldAmount);
             $.ajax({
                 type: "POST",
-                url: "http://localhost/Inl-mningsuppgift3PHP/api/generelizedApi.php",
+                url: "http://localhost/Grupp-B_slack/PHPinl%C3%A4mning3/Inl-mningsuppgift3PHP/api/generelizedApi.php",
                 data: dataToSend,
                 success: function (result) {
                     $('#info').text(result.info.message);
-                    //console.log(result.info);
+ 
                     //once the post is sucessfull, make a GET request for the latest info in the database
                     //Update the values and the texts
 
                     $.ajax({
-                        url: "http://localhost/Inl-mningsuppgift3PHP/api/generelizedApi.php",
+                        url: "http://localhost/Grupp-B_slack/PHPinl%C3%A4mning3/Inl-mningsuppgift3PHP/api/generelizedApi.php",
                         type: "GET",
                         dataType: "json",
                         success: function (data) {
                             
-                            //console.log(data);
                             for (let i = 0; i < data.result.length; i++) {
                                 console.log(data);
                                 let name = data.result[i].personName;
                                 let amount = data.result[i].moneyAmount;
                                 let currency = data.result[i].currency;
-                                document.getElementsByClassName("from")[i].innerHTML =
-                                    name + " has " + amount + " " + currency;
-                                document.getElementsByClassName("to")[i].innerHTML =
-                                    name + " has " + amount;
-                                document.getElementsByClassName("list-name")[
-                                    i
-                                ].innerHTML = name;
-                                document.getElementsByClassName("list-amount")[
-                                    i
-                                ].innerHTML = amount;
-                                document.getElementsByClassName("from")[
-                                    i
-                                ].value = `${name} ${amount} ${currency}`;
+                                document.getElementsByClassName("from")[i].innerHTML = name + " has " + amount + " " + currency;
+                                document.getElementsByClassName("to")[i].innerHTML = name + " has " + amount;
+                                document.getElementsByClassName("list-name")[i].innerHTML = name;
+                                document.getElementsByClassName("list-amount")[i].innerHTML = amount;
+                                document.getElementsByClassName("from")[i].value = `${name} ${amount} ${currency}`;
                             }
                             for (let i = 0; i < data.result2.length; i++) {
                                 let from = data.result2[i].fromPerson;
@@ -163,21 +151,13 @@ $(document).ready(function () {
                                 let cuttedTime = time.slice(0, 16);
                                 let amount = data.result2[i].moneyAmount;
                                 let paymentMethod = data.result2[i].paymentMethod;
-                                document.getElementsByClassName("fromT")[
-                                    i
-                                ].innerHTML = from;
+                                document.getElementsByClassName("fromT")[i].innerHTML = from;
                                 document.getElementsByClassName("toT")[i].innerHTML = to;
-                                document.getElementsByClassName("amountT")[
-                                    i
-                                ].innerHTML = amount;
-                                document.getElementsByClassName("timeT")[
-                                    i
-                                ].innerHTML = cuttedTime;
-                                document.getElementsByClassName("methodT")[
-                                    i
-                                ].innerHTML = paymentMethod;
+                                document.getElementsByClassName("amountT")[i].innerHTML = amount;
+                                document.getElementsByClassName("timeT")[i].innerHTML = cuttedTime;
+                                document.getElementsByClassName("methodT")[i].innerHTML = paymentMethod;
                             }
-                        }, //End sucess GET
+                        }, //End sucess
                         error: function (request, status) {
                             console.log(request);
                             console.log(status);

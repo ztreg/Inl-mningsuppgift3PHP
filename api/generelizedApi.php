@@ -30,10 +30,13 @@ try {
                     $object->toName = filter_input(INPUT_POST, 'toName', FILTER_SANITIZE_STRING);
                     //Sätta rätt datatyp
                     $object->moneyAmount = filter_input(INPUT_POST, 'amount', FILTER_SANITIZE_STRING);
-                    $object->oldAmount = filter_input(INPUT_POST, 'oldAmount', FILTER_SANITIZE_STRING);
                     if ($object->moneyAmount <= 0) {
                         throw new \Exception("You cant send 0 or less");
                     }
+                    $object->oldAmount = filter_input(INPUT_POST, 'oldAmount', FILTER_SANITIZE_STRING);
+                    $object->fromCurrency = filter_input(INPUT_POST, 'fromCurrency', FILTER_SANITIZE_STRING);
+                    $object->toCurrency = filter_input(INPUT_POST, 'toCurrency', FILTER_SANITIZE_STRING);
+                  
                     $object->paymentMethod = filter_input(INPUT_POST, 'paymentMethod', FILTER_SANITIZE_STRING);
 
                     $newTransaction = new transactionClass(new MySQLDB());

@@ -37,13 +37,13 @@ include_once('./includes/header.php');
 
                     </select>
                     <input type="submit" class="btn primary" value="Send money">
-                    
+
                 </div>
-            </div>   
+            </div>
         </form>
         <div>
-        <p>Request info:  -</p>
-        <p id="info"></p>
+            <p>Request info: -</p>
+            <p id="info"></p>
         </div>
     </div>
     <h5 class="text-center">Live-updates</h5>

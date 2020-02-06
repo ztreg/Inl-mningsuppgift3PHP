@@ -36,7 +36,6 @@ class personClass
 
                 array_push($persons, $person_item);
             }
-
             return $persons;
         } catch (\Exception $e) {
             throw new \PDOException($e->getMessage(), (int) $e->getCode());
