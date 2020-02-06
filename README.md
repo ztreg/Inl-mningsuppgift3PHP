@@ -1,5 +1,3 @@
-# GruppB-PHPLogin
-
-# Medlemmar Mathias, Jonas, Nitipon
-
-# Login/register sida med PHP, PDO, PHPUnit tests, MYSQL, apache
+# Pengar överföring som Administratör
+# Jonas
+# PHP, PDO, PHPUnit tests, MYSQL, apache, Injection Dependency, AJAX
