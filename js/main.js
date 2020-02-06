@@ -4,7 +4,7 @@ $(document).ready(function () {
     // link från för mig själv laptop http://localhost/Inl-mningsuppgift3PHP/api/generelizedApi.php
     // link från pc för mig själv http://localhost/Grupp-B_slack/PHPinl%C3%A4mning3/Inl-mningsuppgift3PHP/api/generelizedApi.php
     $.ajax({
-        url: "http://localhost/Grupp-B_slack/PHPinl%C3%A4mning3/Inl-mningsuppgift3PHP/api/generelizedApi.php",
+        url: "http://localhost/Inl-mningsuppgift3PHP/api/generelizedApi.php",
         type: "GET",
         dataType: "json",
         success: function (data) {
@@ -118,7 +118,7 @@ $(document).ready(function () {
         function post(dataToSend) {
             $.ajax({
                 type: "POST",
-                url: "http://localhost/Grupp-B_slack/PHPinl%C3%A4mning3/Inl-mningsuppgift3PHP/api/generelizedApi.php",
+                url: "http://localhost/Inl-mningsuppgift3PHP/api/generelizedApi.php",
                 data: dataToSend,
                 success: function (result) {
                     $('#info').text(result.info.message);
@@ -127,7 +127,7 @@ $(document).ready(function () {
                     //Update the values and the texts
 
                     $.ajax({
-                        url: "http://localhost/Grupp-B_slack/PHPinl%C3%A4mning3/Inl-mningsuppgift3PHP/api/generelizedApi.php",
+                        url: "http://localhost/Inl-mningsuppgift3PHP/api/generelizedApi.php",
                         type: "GET",
                         dataType: "json",
                         success: function (data) {
